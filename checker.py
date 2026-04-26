@@ -32,7 +32,8 @@ def check_traffic(origin, destination, api_key, threshold):
         leg = data["routes"][0]["legs"][0]
 
         normal_duration_sec = leg["duration"]["value"]           # without traffic
-        traffic_duration_sec = leg["duration_in_traffic"]["value"]  # with traffic
+        # duration_in_traffic may be absent if traffic data unavailable
+        traffic_duration_sec = leg.get("duration_in_traffic", leg["duration"])["value"]
 
         normal_mins = normal_duration_sec // 60
         traffic_mins = traffic_duration_sec // 60
@@ -48,9 +49,9 @@ def check_traffic(origin, destination, api_key, threshold):
             "traffic_mins": traffic_mins,
             "delay_mins": delay_mins,
             "ratio": ratio,
-            "summary": leg["summary"],  # e.g. "via I-35"
-            "origin_address": leg["start_address"],
-            "destination_address": leg["end_address"],
+            "summary": data["routes"][0].get("summary", "your route"),
+            "origin_address": leg.get("start_address", origin),
+            "destination_address": leg.get("end_address", destination),
         }
 
     except requests.exceptions.RequestException as e:
