@@ -91,4 +91,4 @@ Consider leaving earlier or taking an alternate route.
 
 ## License
 
-MIT — use it, share it, build on it.
+MIT — use it
